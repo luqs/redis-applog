@@ -11,13 +11,11 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.sirius.skymall.redis.vo.AppLog;
 
 @Component
-@Service
 public class ChatLogTimerTask {
 	@Autowired
 	private StringRedisTemplate redisTemplate;
