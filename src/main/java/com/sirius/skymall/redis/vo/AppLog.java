@@ -12,6 +12,7 @@ public class AppLog {
 	private String content;
 	private String fromUser;
 	private String toUser;
+	private String isGroup;
 
 	public String getContent() {
 		return content;
@@ -43,6 +44,14 @@ public class AppLog {
 
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
+	}
+
+	public String getIsGroup() {
+		return isGroup;
+	}
+
+	public void setIsGroup(String isGroup) {
+		this.isGroup = isGroup;
 	}
 
 	@Override

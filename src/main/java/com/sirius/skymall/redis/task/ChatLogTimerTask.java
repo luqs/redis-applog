@@ -30,7 +30,7 @@ public class ChatLogTimerTask {
 	
 	//@Scheduled(cron = "0/5 * *  * * ?")
 	// 每5秒执行一次
-	@Scheduled(cron="0 0/10 * * * ?")//每5分钟执行一次
+	@Scheduled(cron="0 0/10 * * * ?")//每10分钟执行一次
 	public void saveChatLog() throws SQLException {
 		try {
 			String sql = "select voyage_id from voyage_info";
@@ -39,7 +39,7 @@ public class ChatLogTimerTask {
 			if(rsLs!=null&&rsLs.size()>0){
 				voyageId = (String)rsLs.get(0).get("voyage_id");
 			}
-			sql = "insert into app_log(voyage_id,from_user,to_user,content,create_time) values('"+voyageId+"',?,?,?,?)";
+			sql = "insert into app_log(voyage_id,from_user,to_user,content,create_time,type,is_group) values('"+voyageId+"',?,?,?,?,2,?)";
 			ListOperations<String, String> listOperations = redisTemplate
 					.opsForList();
 			final List<String> logList = listOperations.range("chatlogs", 0, 9999);
@@ -54,6 +54,7 @@ public class ChatLogTimerTask {
 						ps.setString(2, appLog.getToUser());
 						ps.setString(3, appLog.getContent());
 						ps.setString(4, appLog.getCreateTime());
+						ps.setString(5, appLog.getIsGroup());
 						System.out.println(appLog);
 					} catch (Exception e) {
 						e.printStackTrace();

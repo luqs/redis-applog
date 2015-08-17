@@ -11,8 +11,9 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-    
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:jdbc.properties</value>
@@ -20,9 +21,10 @@
 			</list>
 		</property>
 	</bean>
-    
-    <!-- 配置数据源 -->
-	<bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+
+	<!-- 配置数据源 -->
+	<bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
 		<property name="driverClassName" value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
@@ -37,7 +39,9 @@
 		<!-- 获取连接最大等待时间 -->
 		<property name="maxWait" value="60000" />
 
-		 <property name="poolPreparedStatements" value="true" /> <property name="maxPoolPreparedStatementPerConnectionSize" value="33" /> 
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="33" />
 
 		<property name="validationQuery" value="SELECT 1" />
 		<property name="testOnBorrow" value="false" />
@@ -61,15 +65,15 @@
 		<property name="filters" value="stat" />
 	</bean>
 
-	<!-- 配置Jdbc模板  -->
+	<!-- 配置Jdbc模板 -->
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"
 		p:dataSource-ref="dataSource" />
-		
+
 	<!-- 配置事务管理器 -->
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
 		p:dataSource-ref="dataSource" />
-		
+
 	<!-- 拦截器方式配置事物 -->
 	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
@@ -78,38 +82,41 @@
 			<tx:method name="saveOrUpdate*" propagation="REQUIRED" />
 			<tx:method name="delete*" propagation="REQUIRED" />
 			<tx:method name="grant*" propagation="REQUIRED" />
-
 			<tx:method name="init*" propagation="REQUIRED" />
 		</tx:attributes>
 	</tx:advice>
 	<aop:config>
 		<!-- 第一个*代表所有的返回值类型；第二个*代表所有的类；第三个*代表类所有方法；..代表子或者孙子包；最后一个..代表所有的参数 -->
-		<aop:pointcut id="transactionPointcut" expression="execution(* com.sirius.skymall.redis..*.*(..))" />
-		<aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice" />
-		
+		<aop:pointcut id="transactionPointcut"
+			expression="execution(* com.sirius.skymall.redis..*.*(..))" />
+		<aop:advisor pointcut-ref="transactionPointcut"
+			advice-ref="transactionAdvice" />
 	</aop:config>
-	
-	
-	
+
+
+
 	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
 		<property name="maxIdle" value="${redis.pool.maxIdle}" />
 		<property name="maxActive" value="${redis.pool.maxActive}" />
 		<property name="maxWait" value="${redis.pool.maxWait}" />
 	</bean>
-	
-	<bean id="connectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-		p:host-name="${redis.host}" p:port="${redis.port}" p:pool-config-ref="poolConfig"/>
-	
+
+	<bean id="connectionFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		p:host-name="${redis.host}" p:port="${redis.port}" p:pool-config-ref="poolConfig" />
+
 	<bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
-		<property name="connectionFactory" 	ref="connectionFactory" />
-	</bean>	
-	
+		<property name="connectionFactory" ref="connectionFactory" />
+	</bean>
+
 	<!-- Enables the Spring Task @Scheduled programming model -->
-	<context:annotation-config />  
+	<context:annotation-config />
 	<task:executor id="executor" pool-size="1" />
 	<task:scheduler id="scheduler" pool-size="1" />
-	<task:annotation-driven executor="executor" scheduler="scheduler" />
+	<task:annotation-driven executor="executor"
+		scheduler="scheduler" />
 	<!-- 自动扫描dao和service包(自动注入) -->
-	<context:component-scan base-package="com.sirius.skymall.redis.service,com.sirius.skymall.redis.task" />
-	
+	<context:component-scan
+		base-package="com.sirius.skymall.redis.service,com.sirius.skymall.redis.task" />
+
 </beans>
